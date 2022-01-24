@@ -67,7 +67,7 @@ class VisualizationDemo(object):
             self.predictor = DefaultPredictor(cfg)
         reset_cls_test(self.predictor.model, classifier, num_classes)
 
-    def run_on_image(self, image):
+    def run_on_image(self, image, with_vis_output=False):
         """
         Args:
             image (np.ndarray): an image of shape (H, W, C) (in BGR order).
@@ -77,9 +77,13 @@ class VisualizationDemo(object):
             predictions (dict): the output of the model.
             vis_output (VisImage): the visualized image output.
         """
-        vis_output = None
         predictions = self.predictor(image)
+
+        if not with_vis_output: 
+            return predictions, None
+
         # Convert image from OpenCV BGR format to Matplotlib RGB format.
+        vis_output = None
         image = image[:, :, ::-1]
         visualizer = Visualizer(image, self.metadata, instance_mode=self.instance_mode)
         if "panoptic_seg" in predictions:
